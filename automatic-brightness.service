@@ -1,0 +1,13 @@
+[Unit]
+Description=Automatic brightness adjustment based on ambient light sensor
+After=systemd-user-sessions.service systemd-logind.service
+
+[Service]
+ExecStart=/usr/local/bin/automatic-brightness
+Restart=on-failure
+RestartSec=30
+StartLimitInterval=350
+StartLimitBurst=10
+
+[Install]
+WantedBy=multi-user.target

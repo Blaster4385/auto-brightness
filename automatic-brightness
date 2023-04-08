@@ -1,0 +1,26 @@
+#!/bin/bash
+# Script to install the automatic-brightness script and service
+# Author: Venkatesh Chaturvedi (Blaster4385)
+# License: GNU General Public License v3.0
+
+# The minimum and maximum brightness values
+MIN_BRIGHTNESS=0
+MAX_BRIGHTNESS=21333
+
+# The minimum and maximum illuminance values
+MIN_ILLUMINANCE=0
+MAX_ILLUMINANCE=200000
+
+while true; do
+    # Read the illuminance value
+    ILLUMINANCE=$(cat /sys/bus/iio/devices/iio:device0/in_illuminance_raw)
+
+    # Scale the illuminance value to the range [MIN_BRIGHTNESS, MAX_BRIGHTNESS]
+    BRIGHTNESS=$((($ILLUMINANCE - $MIN_ILLUMINANCE) * ($MAX_BRIGHTNESS - $MIN_BRIGHTNESS) / ($MAX_ILLUMINANCE - $MIN_ILLUMINANCE) + $MIN_BRIGHTNESS))
+
+    # Set the brightness using brightnessctl
+    brightnessctl --device intel_backlight s $BRIGHTNESS
+
+    # Sleep  before reading the illuminance value again
+    sleep 1
+done
